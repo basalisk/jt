@@ -5,6 +5,9 @@ description = "JT is a template expander"
 authors = ["Basalisk <basalisk@gmail.com>"]
 license = "MIT"
 
+[tool.poetry.scripts]
+jt = "jt.cli:main"
+
 [tool.poetry.dependencies]
 python = "^3.7"
 click = "^7.1.2"
