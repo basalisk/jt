@@ -6,7 +6,9 @@
 # should be in some part of the standard library but I don't know it well
 # enough yet.
 
-from typing import Union, Any, Optional, List
+#Duh, I could use chainmap, but the tuple->multilevel dict thing...
+
+from typing import Any, Optional, Tuple
 
 class Environ:
     root: dict
@@ -16,15 +18,14 @@ class Environ:
         self.root = root
         self.parent = parent
 
-    def lookup(self, path: List[str]) -> Any:
+    def lookup(self, path: Tuple[str]) -> Any:
         try:
-            search = list(reversed(path.copy()))
             found = self.root
-            while len(search) >= 1:
-                found = found[search.pop()]
+            for here in path:
+                found = found[here]
             return found
 
-        except(KeyError):
+        except(KeyError,IndexError):
             if self.parent == None:
                 raise KeyError('.'.join(path)) from None
             return self.parent.lookup(path)
