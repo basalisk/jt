@@ -17,7 +17,7 @@ def test_construct_empty_with_parent():
 def test_empty():
     "Empty environment, no parents, shouldn't be able to lookup anything"
     e = Environ(dict())
-    with pytest.raises(KeyError) as k:
+    with pytest.raises(LookupError) as k:
         e.lookup(("who","cares"))
     assert "who" in str(k.value)
 
@@ -38,7 +38,7 @@ def test_one_level_no_parents(l1p0):
 
 def test_one_level_no_parents(l1p0):
     "one level environment, no parents, should not find an non-existing key"
-    with pytest.raises(KeyError) as k:
+    with pytest.raises(LookupError) as k:
         l1p0.lookup(("magnificent",))
     assert "magnificent" in str(k.value)
 
@@ -59,10 +59,10 @@ def test_two_level_no_parents_exist(l2p0):
 
 def test_two_level_no_parents_noexist(l2p0):
     "two level environment, no parents, should not find an non-existing key"
-    with pytest.raises(KeyError) as k:
+    with pytest.raises(LookupError) as k:
         l2p0.lookup(("kings","magnificent"))
     assert "kings.magnificent" in str(k.value)
-    with pytest.raises(KeyError) as k:
+    with pytest.raises(LookupError) as k:
         l2p0.lookup(("fruits","magnificent"))
     assert "fruits.magnificent" in str(k.value)
 
@@ -76,7 +76,7 @@ def l1p1():
 
 def test_one_level_one_parent_non_exist(l1p1):
     "One level environment, a parent, non-existent key"
-    with pytest.raises(KeyError) as k:
+    with pytest.raises(LookupError) as k:
         l1p1.lookup(( "wednesday", ))
     assert "wednesday" in str(k.value)
 
@@ -91,4 +91,9 @@ def test_one_level_one_parent_exist_2nd_level(l1p1):
 def test_one_level_one_parent_shadows(l1p1):
     "One level environment, a parent, key in root shadows one in parent"
     assert l1p1.lookup(("shadow",)) == "Son of Odin"
+
+def test_one_level_one_parent_absolute(l1p1):
+    "One level environment, a parent, absolute resolution must KeyError"
+    with pytest.raises(LookupError):
+        l1p1.lookup(("mufasa",),absolute=True)
 
